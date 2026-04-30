@@ -67,8 +67,9 @@ describe('Proxy ImportDataModal', () => {
 
     await input.trigger('change')
     await wrapper.find('form').trigger('submit')
-    await Promise.resolve()
 
-    expect(showError).toHaveBeenCalledWith('admin.proxies.dataImportParseFailed')
+    await vi.waitFor(() => {
+      expect(showError).toHaveBeenCalledWith('admin.proxies.dataImportParseFailed')
+    })
   })
 })

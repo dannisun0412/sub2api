@@ -347,6 +347,7 @@ import ErrorPassthroughRulesModal from '@/components/admin/ErrorPassthroughRules
 import TLSFingerprintProfilesModal from '@/components/admin/TLSFingerprintProfilesModal.vue'
 import { buildOpenAIUsageRefreshKey } from '@/utils/accountUsageRefresh'
 import { formatDateTime, formatRelativeTime } from '@/utils/format'
+import { createJsonDownloadBlob } from '@/utils/jsonFile'
 import type { Account, AccountPlatform, AccountType, Proxy as AccountProxy, AdminGroup, WindowStats, ClaudeModel } from '@/types'
 
 const { t } = useI18n()
@@ -1296,7 +1297,7 @@ const handleExportData = async () => {
     )
     const timestamp = formatExportTimestamp()
     const filename = `sub2api-account-${timestamp}.json`
-    const blob = new Blob([JSON.stringify(dataPayload, null, 2)], { type: 'application/json' })
+    const blob = createJsonDownloadBlob(dataPayload)
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url

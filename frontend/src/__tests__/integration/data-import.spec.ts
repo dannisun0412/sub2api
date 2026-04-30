@@ -67,8 +67,9 @@ describe('ImportDataModal', () => {
 
     await input.trigger('change')
     await wrapper.find('form').trigger('submit')
-    await Promise.resolve()
 
-    expect(showError).toHaveBeenCalledWith('admin.accounts.dataImportParseFailed')
+    await vi.waitFor(() => {
+      expect(showError).toHaveBeenCalledWith('admin.accounts.dataImportParseFailed')
+    })
   })
 })

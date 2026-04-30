@@ -90,6 +90,7 @@ import { useI18n } from 'vue-i18n'
 import BaseDialog from '@/components/common/BaseDialog.vue'
 import { adminAPI } from '@/api/admin'
 import { useAppStore } from '@/stores/app'
+import { readJsonFileText } from '@/utils/jsonFile'
 import type { AdminDataImportResult } from '@/types'
 
 interface Props {
@@ -143,24 +144,6 @@ const handleClose = () => {
   emit('close')
 }
 
-const readFileAsText = async (sourceFile: File): Promise<string> => {
-  if (typeof sourceFile.text === 'function') {
-    return sourceFile.text()
-  }
-
-  if (typeof sourceFile.arrayBuffer === 'function') {
-    const buffer = await sourceFile.arrayBuffer()
-    return new TextDecoder().decode(buffer)
-  }
-
-  return await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result ?? ''))
-    reader.onerror = () => reject(reader.error || new Error('Failed to read file'))
-    reader.readAsText(sourceFile)
-  })
-}
-
 const handleImport = async () => {
   if (!file.value) {
     appStore.showError(t('admin.accounts.dataImportSelectFile'))
@@ -169,7 +152,7 @@ const handleImport = async () => {
 
   importing.value = true
   try {
-    const text = await readFileAsText(file.value)
+    const text = await readJsonFileText(file.value)
     const dataPayload = JSON.parse(text)
 
     const res = await adminAPI.accounts.importData({
